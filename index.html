@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Wheel">
+    <meta name="theme-color" content="#f3f5ff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#141626" media="(prefers-color-scheme: dark)">
+    <title>Decision Wheel</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Decision Wheel home">
+        <span class="brand-mark" aria-hidden="true">D</span>
+        <span>Decision Wheel</span>
+      </a>
+      <button id="installButton" class="button button-secondary install-button" type="button" hidden>
+        <!-- Install app icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 17v3h16v-3"/></svg>
+        <span>Install app</span>
+      </button>
+    </header>
+
+    <main class="app-shell">
+      <section id="setupScreen" class="screen card" aria-labelledby="pageTitle">
+        <div class="intro">
+          <p class="eyebrow">A little help deciding</p>
+          <h1 id="pageTitle">Let the wheel decide.</h1>
+          <p class="intro-copy">Add your options and discover your full ranking, one spin at a time.</p>
+        </div>
+
+        <div class="decision-name-field">
+          <label for="decisionNameInput">Decision name <span class="muted">(optional)</span></label>
+          <input id="decisionNameInput" name="decisionName" type="text" autocomplete="off" dir="auto" placeholder="e.g. What should I do today?" aria-describedby="setupMessage">
+        </div>
+
+        <form id="optionForm" class="add-form">
+          <label for="optionInput">Your options</label>
+          <div class="input-row">
+            <input id="optionInput" name="option" type="text" autocomplete="off" dir="auto" placeholder="Type an option…" aria-describedby="setupMessage">
+            <button class="button button-primary" type="submit">
+              <!-- Plus icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Add</span>
+            </button>
+          </div>
+        </form>
+
+        <fieldset class="mode-choice">
+          <legend>Choose your mode</legend>
+          <label class="mode-option">
+            <input type="radio" name="mode" value="full" checked>
+            <span>Full ranking</span>
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="mode" value="quick">
+            <span>Quick pick (one winner)</span>
+          </label>
+        </fieldset>
+
+        <p id="setupMessage" class="message" aria-live="polite"></p>
+        <ul id="optionsList" class="options-list" dir="auto" aria-label="Added options"></ul>
+
+        <div class="option-tools">
+          <p id="draftMessage" class="inline-message" aria-live="polite"></p>
+          <button id="shuffleButton" class="button button-secondary" type="button" disabled>
+            <!-- Shuffle icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+            <span>Shuffle</span>
+          </button>
+        </div>
+
+        <section class="templates-section" aria-labelledby="templatesTitle">
+          <h2 id="templatesTitle">Quick templates</h2>
+          <div id="templateButtons" class="template-buttons"></div>
+        </section>
+
+        <div class="setup-footer">
+          <p id="optionCount" class="muted">0 options added</p>
+          <button id="startButton" class="button button-primary button-wide" type="button" disabled>
+            <span>Start</span>
+            <!-- Arrow icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <section class="history-section" aria-labelledby="historyTitle">
+          <div class="section-heading">
+            <h2 id="historyTitle">History</h2>
+            <button id="clearHistoryButton" class="button button-secondary button-small" type="button" hidden>Clear all history</button>
+          </div>
+          <p id="historyMessage" class="muted" aria-live="polite"></p>
+          <div id="clearHistoryConfirmation" class="confirmation-panel" hidden>
+            <p>Clear every saved decision from your history?</p>
+            <div class="confirmation-actions">
+              <button id="confirmClearHistoryButton" class="button button-danger" type="button">Yes, clear history</button>
+              <button id="cancelClearHistoryButton" class="button button-secondary" type="button">Keep history</button>
+            </div>
+          </div>
+          <ul id="historyList" class="history-list" dir="auto"></ul>
+          <section id="historyViewer" class="history-viewer" aria-live="polite" hidden>
+            <div class="section-heading">
+              <h3 id="historyViewerTitle"></h3>
+              <button id="closeHistoryViewerButton" class="button button-secondary button-small" type="button">Close</button>
+            </div>
+            <p id="historyViewerDate" class="muted"></p>
+            <ol id="historyViewerList" class="results-list" dir="auto"></ol>
+          </section>
+        </section>
+      </section>
+
+      <section id="wheelScreen" class="screen card" aria-labelledby="wheelTitle" hidden>
+        <div class="wheel-heading">
+          <p class="eyebrow">The decision is in motion</p>
+          <p id="wheelDecisionName" class="decision-name"></p>
+          <h1 id="wheelTitle">Who gets rank 1?</h1>
+          <p id="wheelHint" class="intro-copy">Take a breath and let the wheel choose.</p>
+        </div>
+
+        <div class="wheel-layout">
+          <div class="wheel-stage">
+            <span class="wheel-pointer" aria-hidden="true"></span>
+            <canvas id="wheelCanvas" aria-label="Decision wheel"></canvas>
+          </div>
+
+          <div class="wheel-controls">
+            <button id="spinButton" class="button button-primary button-wide" type="button">
+              <!-- Spin icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
+              <span>Spin</span>
+            </button>
+            <button id="nextRankButton" class="button button-primary button-wide" type="button" hidden></button>
+            <button id="soundButton" class="button button-secondary" type="button" aria-pressed="true">
+              <!-- Sound icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5ZM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              <span>Sound: On</span>
+            </button>
+            <p id="wheelNote" class="wheel-note">Every option gets a place in your ranking.</p>
+          </div>
+        </div>
+
+        <section id="rankingSection" class="results-section" aria-labelledby="resultsTitle">
+          <div class="section-heading">
+            <h2 id="resultsTitle">Your results</h2>
+            <span id="resultsCount" class="result-count">0 ranked</span>
+          </div>
+          <ol id="resultsList" class="results-list" aria-live="polite" dir="auto"></ol>
+        </section>
+
+        <section id="quickWinnerPanel" class="quick-winner-panel" aria-live="polite" hidden>
+          <p class="eyebrow">Your pick</p>
+          <h2 id="quickWinnerName" dir="auto"></h2>
+        </section>
+
+        <p id="copyMessage" class="inline-message copy-message" aria-live="polite"></p>
+        <section id="finishedPanel" class="finished-panel" aria-live="polite" hidden>
+          <div>
+            <h2 id="finishedTitle">All ranked!</h2>
+            <p>Your complete decision ranking is ready.</p>
+          </div>
+          <div class="finish-actions">
+            <button id="copyButton" class="button button-secondary" type="button">
+              <!-- Copy icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+              <span>Copy result</span>
+            </button>
+            <button id="quickAgainButton" class="button button-primary" type="button" hidden>
+              <!-- Spin again icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
+              <span>Spin again</span>
+            </button>
+            <button id="editButton" class="button button-secondary" type="button">
+              <!-- Edit icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 5 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z"/></svg>
+              <span>Edit options</span>
+            </button>
+            <button id="restartButton" class="button button-primary" type="button">
+              <!-- Restart icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>
+              <span>Start over</span>
+            </button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Made for the moments when every option sounds good.</p>
+    </footer>
+  </body>
+</html>
